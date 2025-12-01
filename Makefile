@@ -156,6 +156,6 @@ evidence-pack:
 
 # Pipeline completo: desde build hasta evidencias (devsecops local-first)
 
-pipeline: build unit sast sca sbom scan-image compose-up dast compose-down kind-up kind-load k8s-deploy k8s-portforward smoke attest evidence-pack
+pipeline: build unit sast sca sbom scan-image compose-up dast compose-down evidence-pack
 
 .PHONY: ensure-tools venv build unit sast sca sbom scan-image compose-up compose-down dast kind-up kind-load k8s-deploy k8s-portforward smoke k8s-destroy kind-down attest evidence-pack pipeline

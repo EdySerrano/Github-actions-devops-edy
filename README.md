@@ -59,3 +59,38 @@ Se ha verificado y mejorado la integración del servicio HTTP y las pruebas auto
 - **Smoke Test en Pipeline:** El workflow ahora levanta el servicio utilizando `docker compose`, espera a que esté listo y realiza una peticion al endpoint `/health`.
 - **Visibilidad:** La respuesta JSON del endpoint `/health` se imprime en los logs del pipeline para facilitar la depuración.
 - **Limpieza:** Se asegura que los contenedores se detengan y eliminen (`docker compose down -v`) al finalizar el job, independientemente del resultado.
+
+#### Ejercicio 6 - Manifiestos de orquestacion y endpoint de salud
+
+Se han configurado los manifiestos de Kubernetes (`k8s/deployment.yaml`) para aprovechar el endpoint `/health` del microservicio:
+
+- **Liveness Probe:** Verifica si el contenedor sigue vivo. Si falla repetidamente, Kubernetes reiniciará el pod.
+- **Readiness Probe:** Verifica si el servicio está listo para recibir tráfico. Si falla, el pod se retira del balanceador de carga hasta que se recupere.
+
+**Uso con orquestador local (KinD):**
+
+Para probar estos manifiestos localmente:
+1. Crear un clúster: `kind create cluster --config k8s/kind-config.yaml`
+2. Cargar la imagen: `kind load docker-image python-microservice:dev`
+3. Aplicar manifiestos: `kubectl apply -f k8s/deployment.yaml`
+4. Verificar estado: `kubectl get pods` y `kubectl describe pod <nombre-pod>` para ver los eventos de las sondas.
+
+#### Ejercicio 7 - Automatización local-first y empaquetado de evidencias
+
+El `Makefile` permite la ejecución completa del pipeline DevSecOps en un entorno local, sin depender de GitHub Actions.
+
+**Comandos principales:**
+
+- `make pipeline`: Ejecuta todo el flujo de trabajo de forma secuencial:
+    1.  `build`: Construye la imagen Docker.
+    2.  `unit`: Ejecuta pruebas unitarias.
+    3.  `sast`: Análisis estático (Bandit, Semgrep).
+    4.  `sca`: Análisis de dependencias (Pip-audit).
+    5.  `sbom`: Generación de SBOM (Syft).
+    6.  `scan-image`: Escaneo de vulnerabilidades de imagen (Grype).
+    7.  `compose-up` / `dast` / `compose-down`: Pruebas dinámicas con OWASP ZAP.
+    8.  `evidence-pack`: Empaqueta todos los reportes generados.
+
+- `make evidence-pack`: Crea un archivo comprimido `.tar.gz` en el directorio `artifacts/` con todos los reportes y evidencias generadas, incluyendo una marca de tiempo para trazabilidad.
+
+**Nota:** Para ejecutar esto localmente, es necesario tener instaladas las herramientas: Docker, Python, Syft, Grype, Bandit, Semgrep y Pip-audit.
