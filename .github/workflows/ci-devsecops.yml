@@ -73,7 +73,10 @@ jobs:
         run: |
           docker compose up -d --build
           sleep 2
-          curl -sf http://127.0.0.1:8000/health
+          echo ">> Verificando endpoint /health..."
+          curl -v http://127.0.0.1:8000/health
+          echo ">> Respuesta JSON:"
+          curl -s http://127.0.0.1:8000/health | jq .
 
       - name: DAST (OWASP ZAP baseline)
         run: |

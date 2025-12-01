@@ -2,6 +2,7 @@ import http.client
 import os
 import subprocess
 import time
+import json
 
 def test_health_endpoint():
     """
@@ -18,6 +19,73 @@ def test_health_endpoint():
 
     # Copiamos el entorno actual para no perder variables existentes
     env = os.environ.copy()
+    env["PORT"] = "8090"
+    
+    # Inicia el servidor en segundo plano
+    proc = subprocess.Popen(
+        ["python", "-m", "src.app"],
+        env=env,
+        stdout=subprocess.PIPE,
+        stderr=subprocess.PIPE
+    )
+    
+    try:
+        # Espera un poco a que levante
+        time.sleep(2)
+        
+        # Hacemos la peticion
+        conn = http.client.HTTPConnection("127.0.0.1", 8090, timeout=2)
+        conn.request("GET", "/health")
+        response = conn.getresponse()
+        
+        # Verificaciones
+        assert response.status == 200, f"El endpoint /health devolvió {response.status}"
+        
+        data = json.loads(response.read().decode())
+        assert data.get("status") == "healthy", "El JSON de respuesta no contiene status: healthy"
+        
+        print(">> Prueba /health exitosa")
+        
+    finally:
+        # Limpieza: matamos el proceso del servidor
+        proc.terminate()
+        proc.wait()
+
+def test_root_endpoint():
+    """
+    Prueba unitaria adicional para el endpoint raíz /.
+    Verifica que devuelva el nombre del servicio y ok=True.
+    """
+    print(">> Iniciando prueba del endpoint / en 127.0.0.1:8091")
+    
+    env = os.environ.copy()
+    env["PORT"] = "8091"
+    env["SERVICE_NAME"] = "test-service"
+    
+    proc = subprocess.Popen(
+        ["python", "-m", "src.app"],
+        env=env,
+        stdout=subprocess.PIPE,
+        stderr=subprocess.PIPE
+    )
+    
+    try:
+        time.sleep(2)
+        conn = http.client.HTTPConnection("127.0.0.1", 8091, timeout=2)
+        conn.request("GET", "/")
+        response = conn.getresponse()
+        
+        assert response.status == 200
+        data = json.loads(response.read().decode())
+        
+        assert data.get("service") == "test-service"
+        assert data.get("ok") is True
+        
+        print(">> Prueba / exitosa")
+        
+    finally:
+        proc.terminate()
+        proc.wait()
     # Forzamos el uso del puerto 8090 para esta prueba
     env["PORT"] = "8090"
 

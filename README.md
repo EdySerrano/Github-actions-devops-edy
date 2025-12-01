@@ -51,3 +51,11 @@ Los reportes generados se almacenan en el directorio `artifacts/` y se suben com
 - `artifacts/sbom-syft-image.json`: SBOM de la imagen Docker construida (formato JSON).
 - `artifacts/grype-image.sarif`: Reporte de vulnerabilidades de la imagen en formato SARIF.
 
+#### Ejercicio 5 - Servicio HTTP, Docker Compose y pruebas de humo
+
+Se ha verificado y mejorado la integración del servicio HTTP y las pruebas automatizadas:
+
+- **Pruebas Unitarias:** Se añadió una nueva prueba `test_root_endpoint` en `tests/test_health.py` que verifica el comportamiento del endpoint raíz `/`, asegurando que devuelve el nombre del servicio correcto y el estado `ok`.
+- **Smoke Test en Pipeline:** El workflow ahora levanta el servicio utilizando `docker compose`, espera a que esté listo y realiza una peticion al endpoint `/health`.
+- **Visibilidad:** La respuesta JSON del endpoint `/health` se imprime en los logs del pipeline para facilitar la depuración.
+- **Limpieza:** Se asegura que los contenedores se detengan y eliminen (`docker compose down -v`) al finalizar el job, independientemente del resultado.
