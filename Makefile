@@ -151,7 +151,8 @@ attest:
 
 evidence-pack:
 	@echo ">> Empaquetando evidencias en artifacts/evidence-<timestamp>.tar.gz"
-	tar -czf artifacts/evidence-$(shell date +%Y%m%d-%H%M%S).tar.gz artifacts .evidence
+	tar -czf evidence.tar.gz artifacts
+	mv evidence.tar.gz artifacts/evidence-$(shell date +%Y%m%d-%H%M%S).tar.gz
 
 
 # Pipeline completo: desde build hasta evidencias (devsecops local-first)
