@@ -19,6 +19,12 @@ jobs:
       actions: read
       security-events: write
     steps:
+      - name: Pipeline Inicio
+        run: |
+          echo "Inicio de la ejecución del pipeline de CI DevSecOps"
+          echo "Repository: ${{ github.repository }}"
+          echo "Branch: ${{ github.ref_name }}"
+
       - name: Checkout
         uses: actions/checkout@v4
 
