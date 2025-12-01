@@ -17,6 +17,22 @@ Se ha configurado el workflow `.github/workflows/ci-devsecops.yml` para cumplir 
     - Repositorio: `${{ github.repository }}`
     - Rama: `${{ github.ref_name }}`
 
+#### Ejercicio 3 - Análisis estático y dependencias
+
+Ya se han integrado herramientas de analisis estático (SAST) y análisis de composición de software (SCA) en el pipeline:
+
+- **Herramientas utilizadas:**
+    - **Bandit:** Analisis de seguridad para código Python.
+    - **Semgrep:** Analisis estático con reglas personalizadas.
+    - **Pip-audit:** Auditoria de vulnerabilidades en dependencias de Python.
+
+- **Configuración de Reglas (Semgrep):**
+    - Se ha configurado una regla explícita en `.semgrep.yml` para prohibir el uso de `eval()` y `exec()`, mitigando riesgos de ejecución de código arbitrario.
+
+- **Artefactos generados:**
+    - `artifacts/bandit.json`: Reporte de Bandit.
+    - `artifacts/semgrep.json`: Reporte de Semgrep.
+    - `artifacts/pip-audit.json`: Reporte de auditoría de dependencias.
 
 #### Ejercicio 4 - Imágenes de contenedor y revisión de segurida
 

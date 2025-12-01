@@ -3,6 +3,6 @@ rules:
     pattern-either:
       - pattern: eval(...)
       - pattern: exec(...)
-    message: "Evitar eval/exec"
+    message: "El uso de eval() o exec() es peligroso y puede permitir la ejecucion arbitraria de codigo. Evitalo."
     severity: ERROR
     languages: [python]
