@@ -1,0 +1,16 @@
+# Definición de propietarios de código
+# Estos usuarios son notificados automáticamente cuando se abren PRs que afectan a estos archivos.
+
+# Por defecto, el propietario del repositorio revisa todo
+* @EdySerrano
+
+# Equipo de Desarrollo: Responsable del código fuente y pruebas
+src/ @EdySerrano
+tests/ @EdySerrano
+
+# Equipo de DevSecOps/Seguridad: Responsable de pipelines, infraestructura y configuración
+.github/ @EdySerrano
+docker/ @EdySerrano
+k8s/ @EdySerrano
+Makefile @EdySerrano
+*.yml @EdySerrano

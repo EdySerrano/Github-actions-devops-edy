@@ -94,3 +94,13 @@ El `Makefile` permite la ejecución completa del pipeline DevSecOps en un entorn
 - `make evidence-pack`: Crea un archivo comprimido `.tar.gz` en el directorio `artifacts/` con todos los reportes y evidencias generadas, incluyendo una marca de tiempo para trazabilidad.
 
 **Nota:** Para ejecutar esto localmente, es necesario tener instaladas las herramientas: Docker, Python, Syft, Grype, Bandit, Semgrep y Pip-audit.
+
+#### Ejercicio 8 - Control de cambios y revisión colaborativa
+
+Se ha implementado un archivo `.github/Propietario` para definir la propiedad del código y exigir revisiones:
+
+- **Reglas definidas:**
+    - `src/` y `tests/`: Asignados al equipo de desarrollo (representado por `@EdySerrano`).
+    - `.github/`, `docker/`, `k8s/` y `Makefile`: Asignados al equipo de DevSecOps/Seguridad.
+
+- **Protección de rama:** Al combinar este archivo con las reglas de protección de rama de GitHub (Branch Protection Rules), se garantiza que ningún cambio entre a `main` sin la aprobación explícita del propietario del código correspondiente. Esto asegura el principio de "cuatro ojos" (two-person rule), donde el autor del código nunca puede aprobar y fusionar sus propios cambios sin una revisión independiente.
