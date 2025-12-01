@@ -1,5 +1,8 @@
 FROM python:3.12-slim
 
+LABEL maintainer="EdySerrano" \
+      description="Python Microservice for DevSecOps pipeline"
+
 ENV PYTHONDONTWRITEBYTECODE=1     PYTHONUNBUFFERED=1     PIP_NO_CACHE_DIR=1     SERVICE_NAME=python-microservice     PORT=8000
 
 RUN useradd -m appuser

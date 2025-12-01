@@ -7,6 +7,10 @@ on:
     branches: [ "main" ]
   workflow_dispatch: {}
 
+env:
+  IMAGE_NAME: python-microservice
+  IMAGE_TAG: dev
+
 jobs:
   pipeline:
     runs-on: ubuntu-latest
@@ -17,6 +21,9 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+
+      - name: Create artifacts directory
+        run: mkdir -p artifacts
 
       - name: Set up Python
         uses: actions/setup-python@v5
@@ -34,7 +41,7 @@ jobs:
           curl -sSfL https://raw.githubusercontent.com/anchore/grype/main/install.sh | sh -s -- -b /usr/local/bin
 
       - name: Build image
-        run: docker build -t python-microservice:dev -f docker/Dockerfile .
+        run: docker build -t ${{ env.IMAGE_NAME }}:${{ env.IMAGE_TAG }} -f docker/Dockerfile .
 
       - name: Unit tests
         run: pytest -q
@@ -51,10 +58,10 @@ jobs:
       - name: SBOM (syft project + image)
         run: |
           syft packages dir:. -o json > artifacts/sbom-syft-project.json || true
-          syft python-microservice:dev -o json > artifacts/sbom-syft-image.json || true
+          syft ${{ env.IMAGE_NAME }}:${{ env.IMAGE_TAG }} -o json > artifacts/sbom-syft-image.json || true
 
       - name: Image scan (grype)
-        run: grype python-microservice:dev -o sarif > artifacts/grype-image.sarif || true
+        run: grype ${{ env.IMAGE_NAME }}:${{ env.IMAGE_TAG }} -o sarif > artifacts/grype-image.sarif || true
 
       - name: Launch app (compose) for DAST
         run: |
