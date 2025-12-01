@@ -104,3 +104,11 @@ Se ha implementado un archivo `.github/Propietario` para definir la propiedad de
     - `.github/`, `docker/`, `k8s/` y `Makefile`: Asignados al equipo de DevSecOps/Seguridad.
 
 - **Protección de rama:** Al combinar este archivo con las reglas de protección de rama de GitHub (Branch Protection Rules), se garantiza que ningún cambio entre a `main` sin la aprobación explícita del propietario del código correspondiente. Esto asegura el principio de "cuatro ojos" (two-person rule), donde el autor del código nunca puede aprobar y fusionar sus propios cambios sin una revisión independiente.
+
+#### Ejercicio 9 - Optimización y rendimiento del pipeline
+
+Se han implementado mejoras de rendimiento en el workflow:
+
+- **Caché de dependencias:** Se habilitó el caché para `pip` en el paso de configuración de Python. Esto reduce significativamente el tiempo de instalación de dependencias en ejecuciones subsiguientes (de ~30s a ~2s), ya que evita descargar paquetes que no han cambiado.
+- **Concurrencia:** Se configuró un grupo de concurrencia para cancelar ejecuciones redundantes en la misma rama. Esto ahorra recursos de cómputo y evita colas innecesarias cuando se hacen múltiples commits rápidos.
+- **Trade-offs:** Aunque el caché acelera el proceso, existe el riesgo mínimo de usar dependencias obsoletas si el hash de bloqueo no cambia correctamente (mitigado por el hash de `requirements.txt`). La cancelación de concurrencia puede impedir ver el estado de builds intermedios, pero prioriza siempre la versión más reciente del código.
